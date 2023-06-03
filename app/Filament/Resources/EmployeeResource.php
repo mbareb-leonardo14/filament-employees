@@ -22,12 +22,13 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\EmployeeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\EmployeeResource\RelationManagers;
+use App\Filament\Resources\EmployeeResource\Widgets\EmployeesStateOverview;
 
 class EmployeeResource extends Resource
 {
     protected static ?string $model = Employee::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-users';
 
     public static function form(Form $form): Form
     {
@@ -39,6 +40,7 @@ class EmployeeResource extends Resource
                             ->label('Country')
                             ->options(Country::all()->pluck('name', 'id')->toArray())
                             ->reactive()
+                            ->required()
                             ->afterStateUpdated(fn (callable $set) => $set('state_id', null)),
                         Select::make('state_id')
                             ->label('State')
@@ -51,6 +53,7 @@ class EmployeeResource extends Resource
                                 return $country->states()->pluck('name', 'id');
                             })
                             ->reactive()
+                            ->required()
                             ->afterStateUpdated(fn (callable $set) => $set('city_id', null)),
                         Select::make('city_id')
                             ->label('City')
@@ -61,6 +64,7 @@ class EmployeeResource extends Resource
                                 }
                                 return $state->cities()->pluck('name', 'id');
                             })
+                            ->required()
                             ->reactive()
                             ->afterStateUpdated(fn (callable $set) => $set('department_id', null)),
                         Select::make('department_id')
@@ -109,6 +113,13 @@ class EmployeeResource extends Resource
     {
         return [
             //
+        ];
+    }
+
+    public static function getWidget(): array
+    {
+        return [
+            EmployeesStateOverview::class,
         ];
     }
 

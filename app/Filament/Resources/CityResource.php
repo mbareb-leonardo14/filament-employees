@@ -21,7 +21,9 @@ class CityResource extends Resource
 {
     protected static ?string $model = City::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-collection';
+    protected static ?string $navigationIcon = 'heroicon-o-globe-alt';
+
+    protected static ?string $navigationGroup = 'System Management';
 
     public static function form(Form $form): Form
     {
@@ -30,8 +32,8 @@ class CityResource extends Resource
                 Card::make()
                     ->schema([
                         Select::make('state_id')
-                            ->relationship('state', 'name'),
-                        TextInput::make('name'),
+                            ->relationship('state', 'name')->required(),
+                        TextInput::make('name')->required(),
                     ])
             ]);
     }
@@ -43,7 +45,7 @@ class CityResource extends Resource
                 TextColumn::make('id')->sortable(),
                 TextColumn::make('name')->sortable()->searchable(),
                 TextColumn::make('state.name')->sortable(),
-                TextColumn::make('created_at')->dateTime(),
+                TextColumn::make('created_at')->dateTime('M j, Y'),
             ])
             ->filters([
                 //
